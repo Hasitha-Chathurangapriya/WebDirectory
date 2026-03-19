@@ -1,6 +1,6 @@
 const businessData = [
   { "name": "Nsa Travels", "url": "https://nsatravels.lk/", "sector": "Travel / Agencies" },
-  { "name": "Ceylonlandd", "url": "https://ceylonlandd.lk/", "sector": "Land Development" },
+  { "name": "Ceylonlandd", "url": "https://ceylonlandd.lk/", "sector": "Salon" },
   { "name": "Drbrothers", "url": "https://drbrothers.lk/", "sector": "Vehicles" },
   { "name": "Nelumkole", "url": "https://nelumkole.lk/", "sector": "Hotel" },
   { "name": "Ktlholdings", "url": "https://ktlholdings.lk/", "sector": "Logistics" },
