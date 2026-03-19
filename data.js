@@ -40,6 +40,7 @@ const businessData = [
   { "name": "Pamodadistributor", "url": "https://pamodadistributor.lk/", "sector": "Vehicles" },
   { "name": "Royalinterior", "url": "https://royalinterior.lk/", "sector": "Home Decoration" },
   { "name": "Royalleather", "url": "https://royalleather.lk/", "sector": "Home Decoration" },
+  { "name": "Amilaelectronics", "url": "https://amilaelectronics.lk/", "sector": "Home Decoration" },
   { "name": "Amilaelectronics", "url": "https://amilaelectronics.lk/", "sector": "Home Decoration" }
 ];
 
