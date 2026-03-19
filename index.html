@@ -26,6 +26,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            scroll-behavior: smooth;
         }
         
         .glass-header {
@@ -37,6 +38,12 @@
             -webkit-backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255,255,255,0.5);
             box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-header.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 20px rgba(227, 82, 5, 0.1);
         }
         
         ::-webkit-scrollbar {
@@ -51,9 +58,11 @@
             background: #e35205;
             border-radius: 20px;
             border: 1px solid #ffe5d8;
+            transition: all 0.3s ease;
         }
         ::-webkit-scrollbar-thumb:hover {
             background: #c03e00;
+            transform: scale(1.1);
         }
         
         * {
@@ -61,37 +70,103 @@
             scrollbar-color: #e35205 #f1f5f9;
         }
         
+        /* Enhanced card entrance animation */
         .card-entrance {
-            animation: fadeSlideUp 0.35s cubic-bezier(0.21, 0.98, 0.35, 1) forwards;
+            animation: fadeScaleUp 0.5s cubic-bezier(0.21, 1.11, 0.4, 1) forwards;
+            opacity: 0;
+            transform: scale(0.95) translateY(20px);
         }
         
-        @keyframes fadeSlideUp {
-            0% { opacity: 0; transform: translateY(12px); }
-            100% { opacity: 1; transform: translateY(0); }
+        @keyframes fadeScaleUp {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.95) translateY(20px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1) translateY(0);
+            }
         }
         
+        /* Stagger animation for cards */
         .business-card {
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.21, 1.11, 0.4, 1);
             border: 1px solid transparent;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0,0,0,0.02);
             will-change: transform, border-color, box-shadow;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .business-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(227, 82, 5, 0.1), transparent);
+            transition: left 0.5s ease;
+            pointer-events: none;
+        }
+        
+        .business-card:hover::before {
+            left: 100%;
         }
         
         .business-card:hover {
-            transform: translateY(-6px) scale(1.01);
+            transform: translateY(-8px) scale(1.02);
             border-color: #e35205;
-            box-shadow: 0 24px 28px -12px rgba(227, 82, 5, 0.18), 0 6px 10px -4px rgba(0,0,0,0.02);
+            box-shadow: 0 30px 35px -12px rgba(227, 82, 5, 0.25), 0 8px 15px -6px rgba(0,0,0,0.1);
         }
         
         .business-card:active {
-            transform: translateY(-2px) scale(0.99);
+            transform: translateY(-2px) scale(0.98);
+        }
+        
+        /* Pulse animation for icons */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .business-card:hover .bg-orange-50 {
+            animation: pulse 1s ease infinite;
+        }
+        
+        /* Pill animations */
+        .pill-item {
+            transition: all 0.2s cubic-bezier(0.21, 1.11, 0.4, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pill-item::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(227, 82, 5, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .pill-item:active::after {
+            width: 200px;
+            height: 200px;
         }
         
         .pill-active {
             background-color: #e35205 !important;
             color: white !important;
             border-color: #e35205 !important;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(227, 82, 5, 0.3);
         }
         
         .scrollable-rail {
@@ -105,6 +180,12 @@
             color: #e35205;
             font-weight: 600;
             border: 1px solid rgba(227, 82, 5, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .count-badge:hover {
+            transform: scale(1.1);
+            background: rgba(227, 82, 5, 0.15);
         }
         
         .content-wrapper {
@@ -114,27 +195,190 @@
         .visit-link {
             position: relative;
             z-index: 2;
+            transition: all 0.2s ease;
         }
         
         .visit-link:hover {
             text-decoration: underline;
+            transform: translateX(4px);
+        }
+        
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #e35205;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.21, 1.11, 0.4, 1);
+            box-shadow: 0 4px 15px rgba(227, 82, 5, 0.3);
+            z-index: 100;
+            border: 2px solid white;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            bottom: 30px;
+        }
+        
+        .back-to-top:hover {
+            transform: scale(1.1) translateY(-5px);
+            background: #c03e00;
+            box-shadow: 0 8px 25px rgba(227, 82, 5, 0.4);
+        }
+        
+        .back-to-top:active {
+            transform: scale(0.95) translateY(0);
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .back-to-top:hover svg {
+            animation: bounce 1s ease infinite;
+        }
+        
+        /* Loading animation */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Shimmer effect for cards */
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .shimmer::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            transform: rotate(30deg);
+            animation: shimmer 3s infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+        
+        /* Floating animation for icons */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .business-card .bg-orange-50 {
+            transition: all 0.3s ease;
+        }
+        
+        .business-card:hover .bg-orange-50 {
+            animation: float 2s ease infinite;
+        }
+        
+        /* Category header animation */
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .space-y-3 > .flex {
+            animation: slideInLeft 0.5s ease forwards;
+        }
+        
+        /* Stats counter */
+        .stats-container {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+            border: 1px solid rgba(227, 82, 5, 0.1);
+        }
+        
+        .stat-item {
+            text-align: center;
+            flex: 1;
+            min-width: 100px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e35205;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-item:hover .stat-value {
+            transform: scale(1.1);
         }
     </style>
 </head>
 <body class="antialiased text-slate-700 flex flex-col min-h-screen">
 
-    <header class="glass-header py-3 px-4 md:px-6">
+    <!-- Back to Top Button -->
+    <div class="back-to-top" id="backToTop">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </div>
+
+    <header class="glass-header py-3 px-4 md:px-6" id="header">
         <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-y-2 gap-x-4">
             <div class="flex items-center gap-2">
                 <span class="text-2xl font-bold tracking-tight text-[#e35205]">Web<span class="text-slate-800">Directory</span></span>
-                <span class="hidden sm:inline-block bg-[#e35205]/10 text-[#e35205] text-[11px] font-semibold px-2 py-0.5 rounded-full border border-[#e35205]/20">by hutch</span>
+                <span class="hidden sm:inline-block bg-[#e35205]/10 text-[#e35205] text-[11px] font-semibold px-2 py-0.5 rounded-full border border-[#e35205]/20 animate-pulse">by hutch</span>
             </div>
 
             <div class="flex-grow order-last sm:order-none mt-2 sm:mt-0 w-full sm:w-auto sm:max-w-lg">
                 <div class="relative">
                     <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" style="width: 20px; height: 20px;"></i>
                     <input type="text" id="searchInput" placeholder="Search business or sector..." 
-                           class="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-slate-200 bg-white/90 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#e35205]/40 focus:border-[#e35205] shadow-sm text-base">
+                           class="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-slate-200 bg-white/90 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#e35205]/40 focus:border-[#e35205] shadow-sm text-base transition-all duration-300 focus:scale-105">
                 </div>
             </div>
 
@@ -144,6 +388,22 @@
 
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 md:px-6 py-6 content-wrapper">
 
+        <!-- Stats Container -->
+        <div class="stats-container" id="statsContainer">
+            <div class="stat-item">
+                <div class="stat-value" id="totalBusinesses">0</div>
+                <div class="stat-label">Total Businesses</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="totalCategories">0</div>
+                <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="activeFilter">All</div>
+                <div class="stat-label">Active Filter</div>
+            </div>
+        </div>
+
         <div class="relative mb-7">
             <div class="overflow-x-auto scrollable-rail pb-3 flex flex-nowrap gap-2" id="sectorRail">
                 <div class="text-sm text-slate-400 px-2 py-2">Loading sectors...</div>
@@ -151,7 +411,12 @@
         </div>
 
         <div id="directoryGroups" class="space-y-8">
-            <div class="text-center py-20 text-slate-400">Loading directory data...</div>
+            <div class="text-center py-20 text-slate-400">
+                <div class="loading-spinner inline-block mb-3">
+                    <i data-lucide="loader-2" style="width: 40px; height: 40px;"></i>
+                </div>
+                <p class="text-lg">Loading directory data...</p>
+            </div>
         </div>
     </main>
 
@@ -160,11 +425,11 @@
             <div class="flex flex-col items-center gap-3">
                 <span class="text-3xl font-light tracking-wide text-[#e35205]">Web<span class="font-semibold text-slate-800">Directory</span></span>
                 <nav class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-500 mt-2">
-                    <a href="#" class="hover:text-[#e35205] transition-colors">Home</a>
-                    <a href="#" class="hover:text-[#e35205] transition-colors">Listings</a>
-                    <a href="#" class="hover:text-[#e35205] transition-colors">Sectors</a>
-                    <a href="#" class="hover:text-[#e35205] transition-colors">Contact</a>
-                    <a href="#" class="hover:text-[#e35205] transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-[#e35205] transition-all duration-300 hover:scale-110 inline-block">Home</a>
+                    <a href="#" class="hover:text-[#e35205] transition-all duration-300 hover:scale-110 inline-block">Listings</a>
+                    <a href="#" class="hover:text-[#e35205] transition-all duration-300 hover:scale-110 inline-block">Sectors</a>
+                    <a href="#" class="hover:text-[#e35205] transition-all duration-300 hover:scale-110 inline-block">Contact</a>
+                    <a href="#" class="hover:text-[#e35205] transition-all duration-300 hover:scale-110 inline-block">Privacy</a>
                 </nav>
                 <div class="text-xs text-slate-400 mt-3">
                     © 2026 hutch enterprise-solutions
@@ -197,10 +462,49 @@
             const sectorRail = document.getElementById('sectorRail');
             const groupsContainer = document.getElementById('directoryGroups');
             const searchInput = document.getElementById('searchInput');
+            const header = document.getElementById('header');
+            const backToTop = document.getElementById('backToTop');
+            const totalBusinessesEl = document.getElementById('totalBusinesses');
+            const totalCategoriesEl = document.getElementById('totalCategories');
+            const activeFilterEl = document.getElementById('activeFilter');
+
+            // Update stats
+            function updateStats(filteredCount) {
+                totalBusinessesEl.textContent = allBusinesses.length;
+                totalCategoriesEl.textContent = sectors.length;
+                activeFilterEl.textContent = activeSector || 'All Categories';
+                
+                // Animate the stats
+                totalBusinessesEl.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    totalBusinessesEl.style.transform = 'scale(1)';
+                }, 200);
+            }
+
+            // Initial stats update
+            updateStats();
+
+            // Header scroll effect
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                    backToTop.classList.add('visible');
+                } else {
+                    header.classList.remove('scrolled');
+                    backToTop.classList.remove('visible');
+                }
+            });
+
+            // Back to Top functionality
+            backToTop.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
 
             // Function to open website
             function openWebsite(url, event) {
-                // Prevent if the click came from the Visit link (to avoid double opening)
                 if (event && event.target.closest('.visit-link')) {
                     return;
                 }
@@ -228,6 +532,13 @@
                         activeSector = (sectorVal === 'all') ? null : sectorVal;
                         renderSectorPills();
                         renderGroups();
+                        updateStats();
+                        
+                        // Animate the active filter
+                        activeFilterEl.style.transform = 'scale(1.2)';
+                        setTimeout(() => {
+                            activeFilterEl.style.transform = 'scale(1)';
+                        }, 200);
                     });
                 });
             }
@@ -256,24 +567,26 @@
                     .map(entry => entry[0]); // Extract just the sector names in sorted order
 
                 if (sortedSectorsWithCount.length === 0) {
-                    groupsContainer.innerHTML = `<div class="text-center py-20 text-slate-400 border-2 border-dashed border-slate-200 rounded-3xl p-10 bg-white/40"><i data-lucide="building-2" class="mx-auto mb-3 text-slate-300" style="width: 48px; height: 48px;"></i><p class="text-lg font-medium">No businesses found</p><p class="text-sm">try another keyword or sector</p></div>`;
+                    groupsContainer.innerHTML = `<div class="text-center py-20 text-slate-400 border-2 border-dashed border-slate-200 rounded-3xl p-10 bg-white/40 shimmer"><i data-lucide="building-2" class="mx-auto mb-3 text-slate-300" style="width: 48px; height: 48px;"></i><p class="text-lg font-medium">No businesses found</p><p class="text-sm">try another keyword or sector</p></div>`;
                     if (typeof lucide !== 'undefined') lucide.createIcons();
                     return;
                 }
 
                 let groupsHtml = '';
-                sortedSectorsWithCount.forEach(sector => {
+                sortedSectorsWithCount.forEach((sector, index) => {
                     const businesses = groups[sector];
                     const count = businesses.length;
 
                     let cardsHtml = '';
-                    businesses.forEach(biz => {
+                    businesses.forEach((biz, cardIndex) => {
                         let displayUrl = biz.url;
                         if (displayUrl && !displayUrl.startsWith('http')) {
                             displayUrl = 'https://' + displayUrl;
                         }
+                        // Add staggered animation delay
+                        const delay = cardIndex * 0.05;
                         cardsHtml += `
-                            <div class="business-card bg-white rounded-2xl p-5 flex flex-col card-entrance" data-url="${displayUrl}">
+                            <div class="business-card bg-white rounded-2xl p-5 flex flex-col card-entrance" data-url="${displayUrl}" style="animation-delay: ${delay}s">
                                 <div class="flex items-start justify-between">
                                     <div class="bg-orange-50 p-2.5 rounded-xl">
                                         <i data-lucide="globe" class="text-[#e35205]" style="width: 24px; height: 24px;"></i>
@@ -296,7 +609,7 @@
                     });
 
                     groupsHtml += `
-                        <div class="space-y-3">
+                        <div class="space-y-3" style="animation: slideInLeft 0.5s ease ${index * 0.1}s forwards; opacity: 0;">
                             <div class="flex items-center gap-3">
                                 <h2 class="text-xl font-semibold text-slate-800">${sector}</h2>
                                 <span class="count-badge text-sm font-bold px-3 py-0.5 rounded-full">${count}</span>
@@ -314,7 +627,6 @@
                 document.querySelectorAll('.business-card').forEach(card => {
                     const url = card.dataset.url;
                     card.addEventListener('click', (event) => {
-                        // Don't open if clicking on the Visit link (it has its own handler)
                         if (event.target.closest('.visit-link')) {
                             return;
                         }
@@ -327,10 +639,24 @@
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             }
 
-            // Search input handler
+            // Search input handler with debounce for better performance
+            let searchTimeout;
             searchInput.addEventListener('input', (e) => {
-                searchQuery = e.target.value;
-                renderGroups();
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    searchQuery = e.target.value;
+                    renderGroups();
+                    updateStats();
+                    
+                    // Animate search icon
+                    const searchIcon = document.querySelector('[data-lucide="search"]');
+                    if (searchIcon) {
+                        searchIcon.style.transform = 'scale(1.2)';
+                        setTimeout(() => {
+                            searchIcon.style.transform = 'scale(1)';
+                        }, 200);
+                    }
+                }, 300);
             });
 
             // Initial render
@@ -341,6 +667,20 @@
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
             }
+
+            // Add smooth scroll to all anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
         })();
     </script>
 </body>
