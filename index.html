@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Directory · hutch enterprise-solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Load data.js first -->
+    <script src="data.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 0.8px, transparent 0.8px);
+            background-size: 24px 24px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .glass-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 20px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e35205;
+            border-radius: 20px;
+            border: 1px solid #ffe5d8;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c03e00;
+        }
+        
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #e35205 #f1f5f9;
+        }
+        
+        .card-entrance {
+            animation: fadeSlideUp 0.35s cubic-bezier(0.21, 0.98, 0.35, 1) forwards;
+        }
+        
+        @keyframes fadeSlideUp {
+            0% { opacity: 0; transform: translateY(12px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        .business-card {
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0,0,0,0.02);
+            will-change: transform, border-color, box-shadow;
+            cursor: pointer;
+        }
+        
+        .business-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            border-color: #e35205;
+            box-shadow: 0 24px 28px -12px rgba(227, 82, 5, 0.18), 0 6px 10px -4px rgba(0,0,0,0.02);
+        }
+        
+        .business-card:active {
+            transform: translateY(-2px) scale(0.99);
+        }
+        
+        .pill-active {
+            background-color: #e35205 !important;
+            color: white !important;
+            border-color: #e35205 !important;
+        }
+        
+        .scrollable-rail {
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            mask-image: linear-gradient(90deg, transparent, black 20px, black 90%, transparent);
+        }
+        
+        .count-badge {
+            background: rgba(227, 82, 5, 0.08);
+            color: #e35205;
+            font-weight: 600;
+            border: 1px solid rgba(227, 82, 5, 0.15);
+        }
+        
+        .content-wrapper {
+            flex: 1 0 auto;
+        }
+        
+        .visit-link {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .visit-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="antialiased text-slate-700 flex flex-col min-h-screen">
+
+    <header class="glass-header py-3 px-4 md:px-6">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-y-2 gap-x-4">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl font-bold tracking-tight text-[#e35205]">Web<span class="text-slate-800">Directory</span></span>
+                <span class="hidden sm:inline-block bg-[#e35205]/10 text-[#e35205] text-[11px] font-semibold px-2 py-0.5 rounded-full border border-[#e35205]/20">by hutch</span>
+            </div>
+
+            <div class="flex-grow order-last sm:order-none mt-2 sm:mt-0 w-full sm:w-auto sm:max-w-lg">
+                <div class="relative">
+                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" style="width: 20px; height: 20px;"></i>
+                    <input type="text" id="searchInput" placeholder="Search business or sector..." 
+                           class="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-slate-200 bg-white/90 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#e35205]/40 focus:border-[#e35205] shadow-sm text-base">
+                </div>
+            </div>
+
+            <div class="hidden md:block w-8"></div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 md:px-6 py-6 content-wrapper">
+
+        <div class="relative mb-7">
+            <div class="overflow-x-auto scrollable-rail pb-3 flex flex-nowrap gap-2" id="sectorRail">
+                <div class="text-sm text-slate-400 px-2 py-2">Loading sectors...</div>
+            </div>
+        </div>
+
+        <div id="directoryGroups" class="space-y-8">
+            <div class="text-center py-20 text-slate-400">Loading directory data...</div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-slate-200/70 py-8 mt-6">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="flex flex-col items-center gap-3">
+                <span class="text-3xl font-light tracking-wide text-[#e35205]">Web<span class="font-semibold text-slate-800">Directory</span></span>
+                <nav class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-500 mt-2">
+                    <a href="#" class="hover:text-[#e35205] transition-colors">Home</a>
+                    <a href="#" class="hover:text-[#e35205] transition-colors">Listings</a>
+                    <a href="#" class="hover:text-[#e35205] transition-colors">Sectors</a>
+                    <a href="#" class="hover:text-[#e35205] transition-colors">Contact</a>
+                    <a href="#" class="hover:text-[#e35205] transition-colors">Privacy</a>
+                </nav>
+                <div class="text-xs text-slate-400 mt-3">
+                    © 2026 hutch enterprise-solutions
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            // Use the global businessData from data.js
+            // The variable 'businessData' is now available globally from data.js
+            
+            // Process the data
+            let allBusinesses = businessData.map(item => ({
+                name: String(item.name),
+                url: item.url && typeof item.url === 'string' ? item.url : '#',
+                sector: String(item.sector)
+            }));
+
+            // Extract unique sectors
+            const sectorSet = new Set(allBusinesses.map(b => b.sector));
+            let sectors = Array.from(sectorSet).sort((a, b) => a.localeCompare(b));
+
+            // State
+            let activeSector = null;
+            let searchQuery = '';
+
+            // DOM elements
+            const sectorRail = document.getElementById('sectorRail');
+            const groupsContainer = document.getElementById('directoryGroups');
+            const searchInput = document.getElementById('searchInput');
+
+            // Function to open website
+            function openWebsite(url, event) {
+                // Prevent if the click came from the Visit link (to avoid double opening)
+                if (event && event.target.closest('.visit-link')) {
+                    return;
+                }
+                
+                if (url && url !== '#') {
+                    window.open(url, '_blank', 'noopener,noreferrer');
+                }
+            }
+
+            // Render sector pills
+            function renderSectorPills() {
+                if (!sectorRail) return;
+                
+                let html = `<button class="pill-item flex-shrink-0 px-5 py-2.5 rounded-full border border-slate-200 bg-white text-sm font-medium whitespace-nowrap transition-all duration-150 hover:border-[#e35205] hover:text-[#e35205] shadow-sm ${activeSector === null ? 'pill-active' : ''}" data-sector="all">All</button>`;
+                
+                sectors.forEach(sector => {
+                    const activeClass = (activeSector === sector) ? 'pill-active' : '';
+                    html += `<button class="pill-item flex-shrink-0 px-5 py-2.5 rounded-full border border-slate-200 bg-white text-sm font-medium whitespace-nowrap transition-all duration-150 hover:border-[#e35205] hover:text-[#e35205] shadow-sm ${activeClass}" data-sector="${sector.replace(/"/g, '&quot;')}">${sector}</button>`;
+                });
+                sectorRail.innerHTML = html;
+
+                document.querySelectorAll('.pill-item').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const sectorVal = btn.dataset.sector;
+                        activeSector = (sectorVal === 'all') ? null : sectorVal;
+                        renderSectorPills();
+                        renderGroups();
+                    });
+                });
+            }
+
+            // Render groups with categories sorted by count (highest first)
+            function renderGroups() {
+                let filtered = allBusinesses.filter(b => {
+                    if (activeSector && b.sector !== activeSector) return false;
+                    if (searchQuery.trim() !== '') {
+                        const q = searchQuery.trim().toLowerCase();
+                        return b.name.toLowerCase().includes(q) || b.sector.toLowerCase().includes(q);
+                    }
+                    return true;
+                });
+
+                // Group by sector
+                const groups = {};
+                filtered.forEach(b => {
+                    if (!groups[b.sector]) groups[b.sector] = [];
+                    groups[b.sector].push(b);
+                });
+
+                // Create array of [sector, businesses] and sort by count (highest first)
+                const sortedSectorsWithCount = Object.entries(groups)
+                    .sort((a, b) => b[1].length - a[1].length) // Sort by count descending
+                    .map(entry => entry[0]); // Extract just the sector names in sorted order
+
+                if (sortedSectorsWithCount.length === 0) {
+                    groupsContainer.innerHTML = `<div class="text-center py-20 text-slate-400 border-2 border-dashed border-slate-200 rounded-3xl p-10 bg-white/40"><i data-lucide="building-2" class="mx-auto mb-3 text-slate-300" style="width: 48px; height: 48px;"></i><p class="text-lg font-medium">No businesses found</p><p class="text-sm">try another keyword or sector</p></div>`;
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                    return;
+                }
+
+                let groupsHtml = '';
+                sortedSectorsWithCount.forEach(sector => {
+                    const businesses = groups[sector];
+                    const count = businesses.length;
+
+                    let cardsHtml = '';
+                    businesses.forEach(biz => {
+                        let displayUrl = biz.url;
+                        if (displayUrl && !displayUrl.startsWith('http')) {
+                            displayUrl = 'https://' + displayUrl;
+                        }
+                        cardsHtml += `
+                            <div class="business-card bg-white rounded-2xl p-5 flex flex-col card-entrance" data-url="${displayUrl}">
+                                <div class="flex items-start justify-between">
+                                    <div class="bg-orange-50 p-2.5 rounded-xl">
+                                        <i data-lucide="globe" class="text-[#e35205]" style="width: 24px; height: 24px;"></i>
+                                    </div>
+                                    <span class="text-xs font-medium bg-slate-100 px-2 py-1 rounded-full text-slate-700">${biz.sector}</span>
+                                </div>
+                                <h3 class="font-bold text-lg mt-3 text-slate-800 leading-tight">${biz.name}</h3>
+                                <div class="flex items-center gap-1 text-sm text-slate-500 mt-2">
+                                    <i data-lucide="map-pin" style="width: 14px; height: 14px;"></i>
+                                    <span>Sri Lanka</span>
+                                </div>
+                                <div class="flex items-center justify-between mt-5 pt-3 border-t border-slate-100">
+                                    <a href="${displayUrl}" target="_blank" rel="noopener" class="visit-link inline-flex items-center gap-1.5 text-[#e35205] font-medium text-sm hover:underline" onclick="event.stopPropagation()">
+                                        Visit <i data-lucide="external-link" style="width: 16px; height: 16px;"></i>
+                                    </a>
+                                    <span class="text-xs text-slate-400">↗</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    groupsHtml += `
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3">
+                                <h2 class="text-xl font-semibold text-slate-800">${sector}</h2>
+                                <span class="count-badge text-sm font-bold px-3 py-0.5 rounded-full">${count}</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 auto-rows-fr">
+                                ${cardsHtml}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                groupsContainer.innerHTML = groupsHtml;
+                
+                // Add click event listeners to all business cards
+                document.querySelectorAll('.business-card').forEach(card => {
+                    const url = card.dataset.url;
+                    card.addEventListener('click', (event) => {
+                        // Don't open if clicking on the Visit link (it has its own handler)
+                        if (event.target.closest('.visit-link')) {
+                            return;
+                        }
+                        if (url && url !== '#') {
+                            window.open(url, '_blank', 'noopener,noreferrer');
+                        }
+                    });
+                });
+                
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+
+            // Search input handler
+            searchInput.addEventListener('input', (e) => {
+                searchQuery = e.target.value;
+                renderGroups();
+            });
+
+            // Initial render
+            renderSectorPills();
+            renderGroups();
+
+            // Initialize Lucide icons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        })();
+    </script>
+</body>
+</html>
